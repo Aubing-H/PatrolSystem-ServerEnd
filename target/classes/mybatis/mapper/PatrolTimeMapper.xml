@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bingo.mapper.PatrolTimeMapper">
+    <select id="queryPatrolTime" resultType="PatrolTime">
+        select * from patrol_time;
+    </select>
+
+    <insert id="addPatrolTime" parameterType="PatrolTime">
+        insert into patrol_time(start_time, end_time)
+        values (#{startTime}, #{endTime});
+    </insert>
+
+    <delete id="deletePatrolTime" parameterType="PatrolTime">
+        delete from patrol_time where 1=1
+        <if test="startTime != null">
+            and start_time = #{startTime}
+        </if>
+        <if test="endTime != null">
+            and end_time = #{endTime}
+        </if> ;
+    </delete>
+</mapper>

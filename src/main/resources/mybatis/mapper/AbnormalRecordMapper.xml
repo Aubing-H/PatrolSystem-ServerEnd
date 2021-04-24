@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bingo.mapper.AbnormalRecordMapper">
+
+    <insert id="addAbnormalRecord" parameterType="AbnormalRecord">
+        insert into abnormal_record (user_id, patrol_loc_id, `time`,
+                                     abnormal_item, abnormal_detail, picture_link)
+        values (#{userId}, #{patrolLocId}, #{time}, #{abnormalItem},
+                #{abnormalDetail}, #{pictureLink});
+    </insert>
+
+    <select id="queryByInfo" resultType="AbnormalRecord">
+        select * from abnormal_record
+        where 1=1
+        <if test="start != null and end != null">
+            and `time` between #{start} and #{end}
+        </if>
+        <if test="userId != null">
+            and user_id = #{userId}
+        </if>
+        <if test="locId != null">
+            and patrol_loc_id = #{locId}
+        </if> ;
+    </select>
+
+    <select id="locationAnalysis" resultType="Map">
+        select `name`, count(patrol_loc_id) as number
+        from abnormal_record, patrol_location
+        where patrol_loc_id = id
+        <if test="start != null and end != null">
+            and `time` between #{start} and #{end}
+        </if>
+        group by patrol_loc_id;
+    </select>
+
+    <select id="otherLocation" resultType="Map">
+        select count(patrol_loc_id) as number from abnormal_record where patrol_loc_id = #{locId}
+        <if test="start != null and end != null">
+            and `time` between #{start} and #{end}
+        </if>
+        group by patrol_loc_id;
+    </select>
+
+</mapper>

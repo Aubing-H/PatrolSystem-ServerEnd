@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bingo.mapper.TripRecordMapper">
+
+    <insert id="addTripRecord" parameterType="TripRecord">
+        insert into `trip_record` (`user_id`, `start_time`, `end_time`,
+                                   total_loc_num, patrol_num, `abnormal_num`)
+        values (#{userId}, #{startTime}, #{endTime}, #{totalLocNum},
+                #{patrolNum}, #{abnormalNum});
+    </insert>
+
+    <select id="queryTripRecord" resultType="TripRecord">
+        select * from trip_record;
+    </select>
+
+    <select id="queryByInfo" resultType="TripRecord">
+        select * from trip_record
+        where 1=1
+        <if test="start != null and end != null">
+            and start_time between #{start} and #{end}
+        </if>
+        <if test="id != null">
+            and user_id = #{id}
+        </if> ;
+    </select>
+
+    <select id="queryFirstDay" resultType="TripRecord">
+        select * from trip_record order by start_time limit 1;
+    </select>
+
+    <select id="queryLastDay" resultType="TripRecord">
+        select * from trip_record order by end_time desc limit 1;
+    </select>
+
+    <select id="queryByDay" resultType="Map">
+        select `name`, date_format(start_time, '%Y-%m-%d') as `date`,
+               sum(total_loc_num) as sum_loc_num, sum(patrol_num) as sum_patrol_num,
+               sum(abnormal_num) as sum_abnormal_num
+        from trip_record, `user`
+        where `user`.id = trip_record.user_id
+        <if test="start != null and end != null">
+            and start_time between #{start} and #{end}
+        </if>
+        <if test="userId !=null">
+            and `user`.id = #{userId}
+        </if>
+        group by user_id, `date`;
+    </select>
+</mapper>

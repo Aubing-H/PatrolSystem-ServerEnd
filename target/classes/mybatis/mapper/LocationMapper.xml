@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bingo.mapper.LocationMapper">
+
+    <select id="queryLocationById" resultType="Location">
+        select * from `patrol_location` where `id`=#{id};
+    </select>
+
+    <select id="queryLocationByName" resultType="Location">
+        select * from `patrol_location` where `name`=#{name};
+    </select>
+
+    <select id="queryLocationList" resultType="Location">
+        select * from patrol_location;
+    </select>
+
+    <insert id="addLocation" parameterType="Location">
+        insert into patrol_location(`id`, `name`, `longitude`, `latitude`)
+        values(#{id}, #{name}, #{longitude}, #{latitude});
+    </insert>
+
+    <delete id="deleteLocation">
+        delete from patrol_location where 1=1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="name != null">
+            and `name` = #{name}
+        </if> ;
+    </delete>
+
+</mapper>
